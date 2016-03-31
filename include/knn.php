@@ -16,9 +16,9 @@ $sql = 'insert into trn_euclidean (position, seq, value, beacon1, beacon2, beaco
 $params = [];
 foreach ($offline as $key_off => $val_off) {
 	foreach ($online as $key_on => $val_on) {
-		$beacon1 = ($val_off['beacon1'] - $val_on['beacon1'])**2;
-		$beacon2 = ($val_off['beacon2'] - $val_on['beacon2'])**2;
-		$beacon3 = ($val_off['beacon3'] - $val_on['beacon3'])**2;
+		$beacon1 = pow(2, ($val_off['beacon1'] - $val_on['beacon1']));
+		$beacon2 = pow(2, ($val_off['beacon2'] - $val_on['beacon2']));
+		$beacon3 = pow(2, ($val_off['beacon3'] - $val_on['beacon3']));
 		$euclidian = sqrt( $beacon1 + $beacon2 + $beacon3);
 		$sql .= "(:pos_{$key_off}, :seq_{$key_off}_{$key_on}, :value_{$key_off}_{$key_on}, , :beacon1_{$key_off}_{$key_on}, :beacon2_{$key_off}_{$key_on}, :beacon3_{$key_off}_{$key_on}),";
 
