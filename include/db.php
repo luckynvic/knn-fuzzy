@@ -24,7 +24,7 @@ if($result[0]==0)
 	//create offline table
 	$db->exec(
 		"create table mst_offline (
-			position varchar(50) PRIMARY KEY,
+			position varchar(50),
 			x INTEGER, 
 			y INTEGER, 			
 			beacon1 REAL, 

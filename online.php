@@ -152,10 +152,17 @@ $result = $db->query('select * from mst_online order by seq');
             e.preventDefault();
             $('#btn-euclidean').button('gen');
             $.ajax({
-                url : 'gen_euclidean.php'
-            }).done(function(){
+                url : 'gen_euclidean.php',
+                dataType : 'json',
+            }).done(function(data){
                 alert = $('#alert-euclidean').clone();
-                alert.attr('class','alert alert-success');
+                if(data.success) {
+                    alert.attr('class','alert alert-success');
+                } else
+                {
+                    alert.attr('class','alert alert-danger');
+                    alert.html(data.message);
+                }
                 alert.appendTo('#upload-form');
                 alert.alert();
             }).complete(function(){
