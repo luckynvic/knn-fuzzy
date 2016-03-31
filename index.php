@@ -29,7 +29,6 @@ $k = isset($_GET['k'])?$_GET['k']:1;
     <div role="tabpanel" class="tab-pane active" id="grid"></div>
     <div role="tabpanel" class="tab-pane" id="euclidean">
     <div class="margin10"></div>
-
     	<?php
     	$distance = get_euclidean_array();
     	$max_seq = get_max_seq();
