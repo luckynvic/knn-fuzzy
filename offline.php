@@ -60,6 +60,7 @@ if(isset($_POST['upload'])) {
     $beacon1_col = (int)get_option('offline_beacon1_col',3) - 1;
     $beacon2_col = (int)get_option('offline_beacon2_col',4) - 1;
     $beacon3_col = (int)get_option('offline_beacon3_col',5) - 1;
+    $orient_col = (int)get_option('offline_orient_col',6) - 1;
     $db->beginTransaction();
     try {
         for($row = $begin_row; $row<count($rows); $row++)
@@ -67,8 +68,8 @@ if(isset($_POST['upload'])) {
             if(!isset($rows[$row][$position_col]) || $rows[$row][$position_col]=='')
                 continue;            
 
-            $stmt = $db->prepare('insert into mst_offline (position, x, y, beacon1, beacon2, beacon3)
-                    values (:position, :x, :y, :beacon1, :beacon2, :beacon3)
+            $stmt = $db->prepare('insert into mst_offline (position, x, y, beacon1, beacon2, beacon3, orient)
+                    values (:position, :x, :y, :beacon1, :beacon2, :beacon3, :orient)
                 ');
             $stmt->execute([
                 ':position' => $rows[$row][$position_col],
@@ -76,7 +77,8 @@ if(isset($_POST['upload'])) {
                 ':y' => $rows[$row][$y_col],
                 ':beacon1' => $rows[$row][$beacon1_col],
                 ':beacon2' => $rows[$row][$beacon2_col],
-                ':beacon3' => $rows[$row][$beacon3_col]
+                ':beacon3' => $rows[$row][$beacon3_col],
+                ':orient' => $rows[$row][$orient_col]
                 ]);
         }
         $db->commit();
@@ -110,6 +112,7 @@ $result = $db->query('select * from mst_offline');
                     <th>Beacon1</th>
                     <th>Beacon2</th>
                     <th>Beacon3</th>
+                    <th>Orientation</th>
                 </tr>
             </thead>
             <tbody>
@@ -124,6 +127,7 @@ $result = $db->query('select * from mst_offline');
                     <td><?php echo $row['beacon1'] ?></td>
                     <td><?php echo $row['beacon2'] ?></td>
                     <td><?php echo $row['beacon3'] ?></td>
+                    <td><?php echo $row['orient'] ?></td>
 
                 </tr>
                 <?php

@@ -24,9 +24,10 @@ include('include/header.php');
 </div>
 
 <ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="#offline" aria-controls="profile" role="tab" data-toggle="tab">Offline Template Format</a></li>
-  <li role="presentation"><a href="#online" aria-controls="profile" role="tab" data-toggle="tab">Online Template Format</a></li>
-  <li role="presentation"><a href="#alert" aria-controls="profile" role="tab" data-toggle="tab">Alert</a></li>
+  <li role="presentation" class="active"><a href="#offline" role="tab" data-toggle="tab">Offline Template Format</a></li>
+  <li role="presentation"><a href="#online" role="tab" data-toggle="tab">Online Template Format</a></li>
+  <li role="presentation"><a href="#fuzzy" role="tab" data-toggle="tab">Fuzzy Weight</a></li>
+  <li role="presentation"><a href="#alert" role="tab" data-toggle="tab">Alert</a></li>
 </ul>
 <div class="alert hide" id="alert-template">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -63,7 +64,9 @@ include('include/header.php');
 		 	'offline_beacon3_col' => [
 		 		'label' => 'Kolom nilai Beacon 3'
 		 	],
-
+		 	'offline_orient_col' => [
+		 		'label' => 'Kolom Orientasi'
+		 	],
 		 	
 		 	]);
 		 ?>
@@ -109,6 +112,67 @@ include('include/header.php');
 		  </div>
     	</form>
 
+	</div>
+	<div role="tabpanel" class="tab-pane" id="fuzzy">
+		<div class="margin10"></div>
+		<div class="alert alert-info" id="alert-online">
+			<p>Tentukan nilai batas a, b dan c untuk masing-masing fuzzy rule untuk penentuan weight euclidean</p>
+			</div>
+		<form class="form-horizontal" method="post">
+		<div class="row">
+			<div class="col-md-6"><div class="panel panel-default">
+			<div class="panel-heading"> <h3 class="panel-title">Immediate</h3></div>
+			<div class="panel-body">
+				 <?php 
+				 render_option([
+				 		'fuzzy_immediate_a' => ['label'=>'Nilai a'],
+				 		'fuzzy_immediate_b' => ['label'=>'Nilai b'],
+				 	]);
+				 ?>	
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading"> <h3 class="panel-title">Near</h3></div>
+			<div class="panel-body">
+				 <?php 
+				 render_option([
+				 		'fuzzy_near_a' => ['label'=>'Nilai a'],
+				 		'fuzzy_near_b' => ['label'=>'Nilai b'],
+				 		'fuzzy_near_c' => ['label'=>'Nilai c'],
+				 	]);
+				 ?>	
+			</div>
+		</div></div>
+			<div class="col-md-6"><div class="panel panel-default">
+			<div class="panel-heading"> <h3 class="panel-title">Far</h3></div>
+			<div class="panel-body">
+				 <?php 
+				 render_option([
+				 		'fuzzy_far_a' => ['label'=>'Nilai a'],
+				 		'fuzzy_far_b' => ['label'=>'Nilai b'],
+				 		'fuzzy_far_c' => ['label'=>'Nilai c'],
+				 	]);
+				 ?>	
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading"> <h3 class="panel-title">Unknown</h3></div>
+			<div class="panel-body">
+				 <?php 
+				 render_option([
+				 		'fuzzy_unknown_a' => ['label'=>'Nilai a'],
+				 		'fuzzy_unknown_b' => ['label'=>'Nilai b'],
+				 	]);
+				 ?>	
+			</div>
+		</div></div>
+		</div>		
+		  <div class="form-group">
+		    <div class="col-sm-offset-2 col-sm-10">
+		      <button type="submit" class="btn btn-primary" data-save-text='<i class="fa fa-cog fa-spin"></i> Saving...'><i class="fa fa-save"></i> Save</button>
+		    </div>
+		  </div>
+    	</form>
 	</div>
 	<div role="tabpanel" class="tab-pane" id="alert">
 	<div class="margin10"></div>

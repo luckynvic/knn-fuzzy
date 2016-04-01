@@ -13,6 +13,7 @@ function getDb()
 
 $db = getDb();
 // auto create table
+// $db->exec('drop table trn_euclidean');
 $query_offline = $db->query("SELECT count(0) FROM sqlite_master WHERE type='table' AND name='mst_offline'");
 $query_option = $db->query("SELECT  count(0) FROM sqlite_master WHERE type='table' AND name='mst_option'");
 $query_online = $db->query("SELECT  count(0) FROM sqlite_master WHERE type='table' AND name='mst_online'");
@@ -24,12 +25,14 @@ if($result[0]==0)
 	//create offline table
 	$db->exec(
 		"create table mst_offline (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			position varchar(50),
 			x INTEGER, 
 			y INTEGER, 			
 			beacon1 REAL, 
 			beacon2 REAL, 
-			beacon3 REAL
+			beacon3 REAL,
+			orient varchar(30)
 			)"
 		);
 }
@@ -66,12 +69,13 @@ if($result[0]==0)
 	//create offline table
 	$db->exec(
 		"create table trn_euclidean (
-			position VARCHAR(50), 
+			off_id INTEGER, 
 			seq INTEGER,
 			beacon1 REAL,
 			beacon2 REAL,
 			beacon3 REAL,
-			value REAL
+			value REAL,
+			weight REAL
 			)"
 		);
 }

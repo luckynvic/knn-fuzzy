@@ -53,7 +53,7 @@ $k = isset($_GET['k'])?$_GET['k']:1;
 				echo "<td>{$value['x']}</td>";
 				echo "<td>{$value['y']}</td>";
     			foreach (range(1, $max_seq) as $val1)
-					echo "<td align='right' id='{$value['position']}_{$val1}'>".number_format($value[$val1], 6)."</td>";
+					echo "<td align='right' id='euclidean_{$value['id']}_{$val1}'>".number_format($value[$val1], 6)."</td>";
 				echo '</tr>';
 				$row++;
 	    	}
@@ -80,6 +80,7 @@ $k = isset($_GET['k'])?$_GET['k']:1;
     			<th rowspan="2">Beacon 3</th>
     			<th colspan="3">C Pred</th>
     			<th rowspan="2" id='online-head'>k = 1</th>
+    			<th rowspan="2">Weight</th>
     		</tr>
     		<tr>
     			<th>X</th>
@@ -99,6 +100,7 @@ $k = isset($_GET['k'])?$_GET['k']:1;
 				<td id="y_<?php echo $value['seq'] ?>"></td>
 				<td id="pos_<?php echo $value['seq'] ?>"></td>
 				<td id="k_<?php echo $value['seq'] ?>"></td>
+				<td></td>
 			</tr>
     		<?php  } ?>
     		</tbody>
@@ -118,11 +120,11 @@ function mark_neighbours(seq, k)
 		if(data.success) {
 			// mark neighbours
 			$.each(data.neighbours, function(i, v){
-				$('#'+v.position+'_'+v.seq).attr('class','danger');
+				$('#euclidean_'+v.id+'_'+v.seq).attr('class','danger');
 
 			});
 			//mark nearest
-			$('#'+data.nearest.position+'_'+data.nearest.seq).attr('class','success');
+			$('#euclidean_'+data.nearest.id+'_'+data.nearest.seq).attr('class','success');
 			//fill online data
 			$('#x_'+data.nearest.seq).text(data.nearest.x);
 			$('#y_'+data.nearest.seq).text(data.nearest.y);

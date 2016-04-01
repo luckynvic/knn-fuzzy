@@ -35,12 +35,23 @@ Data lama akan secara otomatis ditimpa dengan data baru yang diupload
 </div>
 <form method="post" enctype="multipart/form-data" id="upload-form"  >
 <div class="row">
-    <div class="col-lg-9">
+    <div class="col-lg-5">
         <div class="fileinput fileinput-new input-group" data-provides="fileinput">
           <div class="form-control" data-trigger="fileinput"><i class="fa fa-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
           <span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="file"></span>
           <a href="#" class="input-group-addon btn btn-danger fileinput-exists" data-dismiss="fileinput"><i class="fa fa-trash"></i></a>
         </div>
+    </div>
+    <div class="col-lg-2">
+    <div class="input-group">
+      <span class="input-group-addon">Sheet</span>
+      <input type="number" class="form-control" placeholder="Sheet" value="1" name="sheet">
+    </div>
+    </div>
+    <div class="col-lg-2 checkbox">
+    <label>
+    <input type="checkbox" name="clear">Clear Previous Data
+    </label>
     </div>
     <div class="col-lg-3">
         <div class="btn-group pull-right">
@@ -56,8 +67,13 @@ if(isset($_POST['upload'])) {
     include('lib/simple-xlsx/simplexlsx.class.php');
     $db = getDb();
     $xlsx = new SimpleXLSX($_FILES['file']['tmp_name']);
-    list($num_cols, $num_rows) = $xlsx->dimension();
-    $rows = $xlsx->rows();
+    $sheet = isset($_POST['sheet'])?(int)$_POST['sheet']:1;
+    $clear = isset($_POST['clear']);
+
+    list($num_cols, $num_rows) = $xlsx->dimension($sheet);
+    $rows = $xlsx->rows($sheet);
+
+    if($clear)
     $db->exec('delete from mst_online');
     //option
     $begin_row = (int)get_option('online_begin_line',0) - 1;
@@ -68,6 +84,7 @@ if(isset($_POST['upload'])) {
     $beacon1_col = (int)get_option('online_beacon1_col',8) - 1;
     $beacon2_col = (int)get_option('online_beacon2_col',9) - 1;
     $beacon3_col = (int)get_option('online_beacon3_col',10) - 1;
+
     $db->beginTransaction();
     try {
         for($row = $begin_row; $row<count($rows); $row++)
