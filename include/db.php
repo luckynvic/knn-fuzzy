@@ -1,4 +1,5 @@
 <?php
+
 function getDb()
 {
 	if(!isset($GLOBALS['db'])) {
@@ -75,7 +76,7 @@ if($result[0]==0)
 			beacon2 REAL,
 			beacon3 REAL,
 			value REAL,
-			weight REAL
+			fuzzy_data TEXT
 			)"
 		);
 }

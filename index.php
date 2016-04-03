@@ -30,6 +30,11 @@ $k = isset($_GET['k'])?$_GET['k']:1;
     <div role="tabpanel" class="tab-pane" id="euclidean">
     <div class="margin10"></div>
     	<?php
+    	// $weight = get_near_neighbours(2, $k);
+    	// echo '<pre>';
+    	// print_r($weight);
+    	// echo '</pre>';
+
     	$distance = get_euclidean_array();
     	$max_seq = get_max_seq();
     	if(!empty($distance)) {
@@ -100,7 +105,7 @@ $k = isset($_GET['k'])?$_GET['k']:1;
 				<td id="y_<?php echo $value['seq'] ?>"></td>
 				<td id="pos_<?php echo $value['seq'] ?>"></td>
 				<td id="k_<?php echo $value['seq'] ?>"></td>
-				<td></td>
+				<td id="weight_<?php echo $value['seq'] ?>"></td>
 			</tr>
     		<?php  } ?>
     		</tbody>
@@ -125,11 +130,13 @@ function mark_neighbours(seq, k)
 			});
 			//mark nearest
 			$('#euclidean_'+data.nearest.id+'_'+data.nearest.seq).attr('class','success');
+
 			//fill online data
 			$('#x_'+data.nearest.seq).text(data.nearest.x);
 			$('#y_'+data.nearest.seq).text(data.nearest.y);
 			$('#pos_'+data.nearest.seq).text(data.nearest.position);
 			$('#k_'+data.nearest.seq).text(data.nearest.value);
+			$('#weight_'+data.nearest.seq).text(data.neighbours.defuzzy.weight_average);
 		}
 	});
 }

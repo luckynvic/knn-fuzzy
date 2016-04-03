@@ -3,16 +3,19 @@ require_once("db.php");
 
 function get_option($name, $default = '')
 {
-	$db = getDb();
-	$stmt = $db->prepare("select value from mst_option where name = :name");
-	$stmt->execute([
-		':name' => $name
-		]);
-	
-	if(($result = $stmt->fetchColumn())!==FALSE)
-		return $result;
-	else
-		return $default;
+	if(!isset($_SESSION['option_'.$name])) {
+		$db = getDb();
+		$stmt = $db->prepare("select value from mst_option where name = :name");
+		$stmt->execute([
+			':name' => $name
+			]);
+		
+		if(($result = $stmt->fetchColumn())!==FALSE)
+			$_SESSION['option_'.$name] = $result;
+		else
+			$_SESSION['option_'.$name] = $default;
+	};
+	return $_SESSION['option_'.$name];
 }
 
 function set_option($name, $value)
@@ -37,7 +40,9 @@ function set_option($name, $value)
 			':name' => $name,
 			':value' => $value
 			]);
-
+		// remove cache
+		if(isset($_SESSION['option_'.$name]))
+			unset($_SESSION['option_'.$name]);
 	} catch(Exception $e)
 	{
 		throw $e;

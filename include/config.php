@@ -1,5 +1,6 @@
 <?php
 define('DEBUG', true);
+
 $app_name = 'kNN - Fuzzy';
 // initial value
 $page_title = $app_name;

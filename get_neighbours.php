@@ -1,6 +1,6 @@
 <?php
 require_once('include/knn.php');
-header('Content-Type:application/json');
+// header('Content-Type:application/json');
 
 if(isset($_GET['k'], $_GET['seq'])) {
 	$neighbours = get_near_neighbours($_GET['seq'], $_GET['k']);

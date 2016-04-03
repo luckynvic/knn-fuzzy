@@ -116,7 +116,7 @@ include('include/header.php');
 	<div role="tabpanel" class="tab-pane" id="fuzzy">
 		<div class="margin10"></div>
 		<div class="alert alert-info" id="alert-online">
-			<p>Tentukan nilai batas a, b dan c untuk masing-masing fuzzy rule untuk penentuan weight euclidean</p>
+			<p>Tentukan nilai batas a, b, c dan bobot untuk masing-masing fuzzy rule untuk penentuan weight euclidean</p>
 			</div>
 		<form class="form-horizontal" method="post">
 		<div class="row">
@@ -127,6 +127,7 @@ include('include/header.php');
 				 render_option([
 				 		'fuzzy_immediate_a' => ['label'=>'Nilai a'],
 				 		'fuzzy_immediate_b' => ['label'=>'Nilai b'],
+				 		'fuzzy_immediate_weight' => ['label'=>'Bobot', 'type'=>'text'],
 				 	]);
 				 ?>	
 			</div>
@@ -139,6 +140,7 @@ include('include/header.php');
 				 		'fuzzy_near_a' => ['label'=>'Nilai a'],
 				 		'fuzzy_near_b' => ['label'=>'Nilai b'],
 				 		'fuzzy_near_c' => ['label'=>'Nilai c'],
+				 		'fuzzy_near_weight' => ['label'=>'Bobot', 'type'=>'text'],
 				 	]);
 				 ?>	
 			</div>
@@ -151,6 +153,7 @@ include('include/header.php');
 				 		'fuzzy_far_a' => ['label'=>'Nilai a'],
 				 		'fuzzy_far_b' => ['label'=>'Nilai b'],
 				 		'fuzzy_far_c' => ['label'=>'Nilai c'],
+				 		'fuzzy_far_weight' => ['label'=>'Bobot', 'type'=>'text'],
 				 	]);
 				 ?>	
 			</div>
@@ -162,6 +165,7 @@ include('include/header.php');
 				 render_option([
 				 		'fuzzy_unknown_a' => ['label'=>'Nilai a'],
 				 		'fuzzy_unknown_b' => ['label'=>'Nilai b'],
+				 		'fuzzy_unknown_weight' => ['label'=>'Bobot', 'type'=>'text'],
 				 	]);
 				 ?>	
 			</div>
