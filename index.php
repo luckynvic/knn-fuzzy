@@ -4,7 +4,27 @@ include('include/header.php');
 include('include/knn.php');
 
 $k = isset($_GET['k'])?$_GET['k']:1;
+
+$distance = get_euclidean_array();
+$max_seq = get_max_seq();
+
 ?>
+<script type="text/javascript" src="js/plugins/pulse/jQuery.jPulse.min.js"></script>
+<script type="text/javascript" src="js/knn-grid-plot.js"></script>
+
+<script type="text/javascript">
+	var point_ways = [];
+	// grid setting
+	var step = 0;
+	var min_step = 1;
+	var max_step = <?php echo $max_seq ?>;
+
+	var speed = 5;
+	var min_speed = 1;
+	var max_speed = 10;
+
+</script>
+
     <div class="well well-sm">
 		<div class="row">
 			<div class="col-md-10"></div>
@@ -26,17 +46,51 @@ $k = isset($_GET['k'])?$_GET['k']:1;
   <li role="presentation"><a href="#online" aria-controls="profile" role="tab" data-toggle="tab" id="online-tab">Online k = 1</a></li>
 </ul>
 <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="grid"></div>
+    <div role="tabpanel" class="tab-pane active" id="grid">
+    <div class="map-grid-container knn-map" data-type="map">
+		
+		<div class="point" id="point"></div>
+
+		<div class="btn-toolbar pull-right" role="toolbar" id="btn-controls">
+		<div class="btn-group btn-group-xs" data-toggle="buttons">
+		  <label class="btn btn-default active">
+		    <input type="radio" autocomplete="off" name="map-grid" checked value="map"> Map
+		  </label>
+		  <label class="btn btn-default">
+		    <input type="radio" autocomplete="off" name="map-grid" value="grid"> Grid
+		  </label>
+		</div>
+    	<div class="btn-group btn-group-xs" role="group" >
+
+    		<a href="#" id="btn-go" class="btn btn-default" rel="tooltip" data-placement="top" title="Go"><i class="fa fa-play"></i></a>
+    		<a href="#" id="btn-pause" disabled="disabled" class="btn btn-default" rel="tooltip" data-placement="top" title="Pause"><i class="fa fa-pause"></i></a>
+    		<a href="#" id="btn-reset" class="btn btn-default" rel="tooltip" data-placement="top" title="Reset"><i class="fa fa-refresh"></i></a>
+    	</div>
+    	<div class="btn-group btn-group-xs" role="group" >
+    		
+    		<a href="#" id="btn-backward" class="btn btn-default" rel="tooltip" data-placement="top" title="Backward"><i class="fa fa-backward"></i></a>
+    		<a href="#" id="btn-step" class="btn btn-default">0</a>
+    		<a href="#" id="btn-forward" class="btn btn-default" rel="tooltip" data-placement="top" title="Forward"><i class="fa fa-forward"></i></a>
+		</div>
+    	<div class="btn-group btn-group-xs" role="group" >
+    		<a href="#" id="btn-speed-up" class="btn btn-default" rel="tooltip" data-placement="top" title="Faster"><i class="fa fa-caret-up"></i></a>
+    		<a href="#" id="btn-speed" class="btn btn-default">5</a>
+    		<a href="#" id="btn-speed-down" class="btn btn-default" rel="tooltip" data-placement="top" title="Slower"><i class="fa fa-caret-down"></i></a>
+		</div>
+
+		<div class="btn-group btn-group-xs" role="group" >
+			<a href="#" id="btn-log" class="btn btn-default" rel="tooltip" data-placement="top" title="Info Window"><i class="fa fa-list"></i> Info</a>		
+		</div>
+		</div>
+
+		<div id="log-window" style="display:none">
+		</div>
+
+    	</div>
+    </div>
     <div role="tabpanel" class="tab-pane" id="euclidean">
     <div class="margin10"></div>
     	<?php
-    	// $weight = get_near_neighbours(2, $k);
-    	// echo '<pre>';
-    	// print_r($weight);
-    	// echo '</pre>';
-
-    	$distance = get_euclidean_array();
-    	$max_seq = get_max_seq();
     	if(!empty($distance)) {
     	?>
     	<div class="table-responsive">
@@ -126,7 +180,6 @@ function mark_neighbours(seq, k)
 			// mark neighbours
 			$.each(data.neighbours, function(i, v){
 				$('#euclidean_'+v.id+'_'+v.seq).attr('class','danger');
-
 			});
 			//mark nearest
 			$('#euclidean_'+data.nearest.id+'_'+data.nearest.seq).attr('class','success');
@@ -137,6 +190,8 @@ function mark_neighbours(seq, k)
 			$('#pos_'+data.nearest.seq).text(data.nearest.position);
 			$('#k_'+data.nearest.seq).text(data.nearest.value);
 			$('#weight_'+data.nearest.seq).text(data.neighbours.defuzzy.weight_average);
+
+			point_ways[data.nearest.seq] = data.nearest;
 		}
 	});
 }
@@ -150,10 +205,107 @@ function mark_knn()
 	//online data
 	$('#online-tab').text('Online k = '+k);
 	$('#online-head').text('k = '+k);
+	
+	//clear point
+	point_ways = [];
 
 	for(i=1; i<=<?php echo $max_seq ?>; i++)
 			mark_neighbours(i, k);
 }
+
+function log_point(point)
+{
+	text = 'No Sequence : '+point.seq +'<br>'
+	text = text + 'Position : '+ point.position + '<br>';
+	text = text + 'X : '+ point.x + '<br>';
+	text = text + 'Y : '+ point.y + '<br>';
+	text = text + 'Euclidean Distance : '+ point.value ;
+
+	$('#log-window').html(text);
+}
+
+// map function
+function set_point_map(point)
+{
+	// console.log(point);
+	log_point(point);
+	$('#point').jPulse( "disable");
+	layer = $(".map-grid-container").data('type');
+	cartesian = get_cartesian_plot(layer, point.x, point.y);
+	css_left = cartesian.x - 12;
+	css_top = cartesian.y - 24;
+
+	$("#point").animate({
+		left : css_left,
+		top : css_top
+	}, {
+		easing : 'swing',
+		duration : 1000 - (speed * 100),
+		complete : function(){
+			$('#point').show();
+			$( "#point" ).jPulse({
+				color: "#00ACED",
+				size: 100,
+				speed: 1000,
+				interval: 500,
+				left: 0,
+				top: 12,
+				zIndex: 98
+			});
+		}
+	});
+
+
+	// linear moving
+
+
+	// $('#point').css('top', css_top)
+	// 		   .css('left', css_left)
+	// 		   .show();
+
+	// $( "#point" ).jPulse({
+	// 	color: "#00ACED",
+	// 	size: 100,
+	// 	speed: 1000,
+	// 	interval: 500,
+	// 	left: 0,
+	// 	top: 12,
+	// 	zIndex: 98
+	// });
+}
+var timeoutId;
+var pause = false;
+
+function play()
+{
+	if(step >= max_step)
+		pause = true;
+
+	move_next();
+	if(pause == false)
+		timeoutId = setTimeout(play, 1100 - (speed * 100));
+}
+
+function move_next()
+{
+	prev = step;
+	if(step < max_step )
+		step = step + 1;
+	if(prev!=step)
+		set_point_map(point_ways[step]);
+	$('#btn-step').text(step);
+}
+
+function move_prev()
+{
+	prev = step;
+	if(step > min_step )
+		step = step - 1;
+	if(prev!=step)
+		set_point_map(point_ways[step]);
+	$('#btn-step').text(step);
+}
+
 
 $(function(){
 	var url = document.location.toString();
@@ -172,6 +324,76 @@ $(function(){
 	});
 
 	mark_knn();
+
+	// map/grid control
+	$('input[name="map-grid"]').change(function(e){
+		e.preventDefault();
+		$(".map-grid-container").attr('class','map-grid-container knn-'+$(this).val());
+		$(".map-grid-container").data('type', $(this).val());
+	});
+
+	$('a[rel="tooltip"]').tooltip({
+		container : "body"
+	});
+
+	$('#btn-backward').click(function(e){
+		e.preventDefault();
+		move_prev();
+		$('#btn-pause').trigger('click');
+	});
+
+	$('#btn-forward').click(function(e){
+		e.preventDefault();
+		move_next();
+		$('#btn-pause').trigger('click');
+	});
+
+	$('#btn-reset').click(function(e){
+		e.preventDefault();
+		step = 0;
+		$('#point').hide();
+		$('#point').jPulse( "disable" );
+		$('#btn-step').text(step);
+		$('#btn-pause').trigger('click');
+		$('#log-window').text('');
+	});
+
+	$('#btn-reset').trigger('click');
+
+	$('#btn-speed-up').click(function(e){
+		e.preventDefault();
+		if(speed < max_speed)
+			speed = speed + 1;
+		$('#btn-speed').text(speed);
+	});
+
+	$('#btn-speed-down').click(function(e){
+		e.preventDefault();
+		if(speed > min_speed)
+			speed = speed - 1;
+		$('#btn-speed').text(speed);
+	});
+
+	$('#btn-go').click(function(e){
+		e.preventDefault();
+		pause = false;
+		play();
+		$(this).attr('disabled', true);
+		$('#btn-pause').attr('disabled', false);
+	});
+
+	$('#btn-pause').click(function(e){
+		e.preventDefault();
+		pause = true;
+		clearTimeout(timeoutId);
+		$(this).attr('disabled', true);
+		$('#btn-go').attr('disabled', false);
+	});
+
+	$('#btn-log').click(function(e){
+		e.preventDefault();
+		$('#log-window').toggle(100);
+	});
 })
  </script>
 <?php

@@ -206,9 +206,16 @@ function get_near_neighbours($seq, $k = 1)
 		':k' => $k
 		]);
 	$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 	$sets = [];
 	array_walk($result, function(&$item, $idx) use (&$sets){
+		//convert item to correct data type
 		$fuzzy = unserialize($item['fuzzy_data']);
+		$item['x'] = (int)$item['x'];
+		$item['y'] = (int)$item['y'];
+		$item['seq'] = (int)$item['seq'];
+		$item['id'] = (int)$item['id'];
+		$item['value'] = (float)$item['value'];
 
 		foreach ($fuzzy as $domain => $y) {
 			if(!isset($sets[$domain]))
