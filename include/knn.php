@@ -329,3 +329,46 @@ function get_euclidean_array()
 	}
 	return $result;
 }
+
+function get_mean($x) {
+if (!is_array($x)) return 0;
+return array_sum($x)/count($x);
+}
+
+function get_variance($x, $sample = false)
+{
+	$mean = get_mean($x);
+	$variance = 0.0;
+	foreach ($x as $i)
+		$variance += pow($i - $mean, 2);
+
+	$variance /= ( $sample ? count($x) - 1 : count($x) );
+	return $variance;
+}
+
+function get_standard_deviation($x, $sample = false) {
+	$variance = get_variance($x, $sample);
+	return (float) sqrt($variance);
+}  
+
+function get_cdf($x)
+{
+  $b1 =  0.319381530;
+  $b2 = -0.356563782;
+  $b3 =  1.781477937;
+  $b4 = -1.821255978;
+  $b5 =  1.330274429;
+  $p  =  0.2316419;
+  $c  =  0.39894228;
+
+  if($x >= 0.0) {
+      $t = 1.0 / ( 1.0 + $p * $x );
+      return (1.0 - $c * exp( -$x * $x / 2.0 ) * $t *
+      ( $t *( $t * ( $t * ( $t * $b5 + $b4 ) + $b3 ) + $b2 ) + $b1 ));
+  }
+  else {
+      $t = 1.0 / ( 1.0 - $p * $x );
+      return ( $c * exp( -$x * $x / 2.0 ) * $t *
+      ( $t *( $t * ( $t * ( $t * $b5 + $b4 ) + $b3 ) + $b2 ) + $b1 ));
+    }
+}

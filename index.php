@@ -130,6 +130,7 @@ $max_seq = get_max_seq();
     	<?php
     	$online = $db->query('select o.seq, o.beacon1, o.beacon2, o.beacon3 from mst_online o order by o.seq')->fetchAll();
     	?>
+    	<div class="table-responsive">
     	<table class="table table-condensed table-border" id="online-table">
     		<thead>
     		<tr>
@@ -140,6 +141,11 @@ $max_seq = get_max_seq();
     			<th colspan="3">C Pred</th>
     			<th rowspan="2" id='online-head'>k = 1</th>
     			<th rowspan="2">Weight</th>
+    			<th rowspan="2">X.w</th>
+    			<th rowspan="2">Y.w</th>
+    			<th rowspan="2">Xe</th>
+    			<th rowspan="2">Ye</th>
+    			<th rowspan="2">CDF</th>
     		</tr>
     		<tr>
     			<th>X</th>
@@ -160,10 +166,46 @@ $max_seq = get_max_seq();
 				<td id="pos_<?php echo $value['seq'] ?>"></td>
 				<td id="k_<?php echo $value['seq'] ?>"></td>
 				<td id="weight_<?php echo $value['seq'] ?>"></td>
+				<td id="xw_<?php echo $value['seq'] ?>"></td>
+				<td id="yw_<?php echo $value['seq'] ?>"></td>
+				<td id="xe_<?php echo $value['seq'] ?>"></td>
+				<td id="ye_<?php echo $value['seq'] ?>"></td>
+				<td id="cdf_<?php echo $value['seq'] ?>"></td>
 			</tr>
     		<?php  } ?>
+    		<tr>
+    			<td colspan="7">Standard Deviation</td>
+    			<td id="k_std"></td>
+    			<td id="w_std"></td>
+    			<td colspan="4"></td>
+    		</tr>
+    		<tr>
+    			<td colspan="7">Error</td>
+    			<td id="k_error"></td>
+    			<td id="w_error"></td>
+    			<td colspan="4"></td>
+    		</tr>
+    		<tr>
+    			<td colspan="7">Minimum</td>
+    			<td id="k_min"></td>
+    			<td id="w_min"></td>
+    			<td colspan="4"></td>
+    		</tr>
+    		<tr>
+    			<td colspan="7">Maximum</td>
+    			<td id="k_max"></td>
+    			<td id="w_max"></td>
+    			<td colspan="4"></td>
+    		</tr>
+    		<tr>
+    			<td colspan="7">Range</td>
+    			<td id="k_range"></td>
+    			<td id="w_range"></td>
+    			<td colspan="4"></td>
+    		</tr>
     		</tbody>
     	</table>
+    	</div>
     </div>
  </div>
  <script type="text/javascript">
@@ -183,16 +225,43 @@ function mark_neighbours(seq, k)
 			});
 			//mark nearest
 			$('#euclidean_'+data.nearest.id+'_'+data.nearest.seq).attr('class','success');
-
-			//fill online data
-			$('#x_'+data.nearest.seq).text(data.nearest.x);
-			$('#y_'+data.nearest.seq).text(data.nearest.y);
-			$('#pos_'+data.nearest.seq).text(data.nearest.position);
-			$('#k_'+data.nearest.seq).text(data.nearest.value);
-			$('#weight_'+data.nearest.seq).text(data.neighbours.defuzzy.weight_average);
-
-			point_ways[data.nearest.seq] = data.nearest;
 		}
+	});
+}
+
+function fill_nearest()
+{
+	k = $('#k').val();
+	$.ajax({
+		url : 'get_nearest_neighbours.php',
+		data : {k : k},
+		dataType : 'json',
+		method : 'GET'
+	}).done(function(data){
+			//fill online data
+		$.each(data.nearest, function(i, v){
+			$('#x_'+v.seq).text(v.x);
+			$('#y_'+v.seq).text(v.y);
+			$('#pos_'+v.seq).text(v.position);
+			$('#k_'+v.seq).text(v.value);
+			$('#weight_'+v.seq).text(v.weight);			
+			$('#xw_'+v.seq).text(v.xw);
+			$('#yw_'+v.seq).text(v.yw);
+			$('#xe_'+v.seq).text(v.xe);
+			$('#ye_'+v.seq).text(v.ye);
+			$('#cdf_'+v.seq).text(v.cdf);
+			point_ways[v.seq] = v;
+		});
+		$('#k_std').text(data.distance_standard_deviation);
+		$('#w_std').text(data.weight_standard_deviation);
+		$('#k_error').text(data.distance_mean);
+		$('#w_error').text(data.weight_mean);
+		$('#k_min').text(data.distance_min);
+		$('#w_min').text(data.weight_min);
+		$('#k_max').text(data.distance_max);
+		$('#w_max').text(data.weight_max);
+		$('#k_range').text(data.distance_range);
+		$('#w_range').text(data.weight_range);
 	});
 }
 
@@ -211,6 +280,9 @@ function mark_knn()
 
 	for(i=1; i<=<?php echo $max_seq ?>; i++)
 			mark_neighbours(i, k);
+
+	fill_nearest();
+	
 }
 
 function log_point(point)
