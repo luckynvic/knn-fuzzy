@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -75,12 +73,4 @@
             </div>
             <!-- /.navbar-collapse -->
         </nav>
-<!--             <li role="presentation" <?php if($route=='index') echo 'class="active"'; ?>><a href="index.php">Home</a></li>
-            <li role="presentation" <?php if($route=='gen') echo 'class="active"'; ?>><a href="gen.php">Text Generator</a></li>
-            <li role="presentation" <?php if($route=='about') echo 'class="active"'; ?>><a href="about.php">About</a></li>
-          </ul>
-        </nav>
-        <h3 class="text-muted"><?php echo $app_name; ?></h3>
-      </div>
- -->
        <div id="page-wrapper">
