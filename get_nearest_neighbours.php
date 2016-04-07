@@ -31,6 +31,8 @@ if(isset($_GET['k'])) {
 		'weight_max' => max($weight_value),
 		'distance_range' =>  max($nearest_value) - min($nearest_value),
 		'weight_range' => max($weight_value) - min($weight_value),
+		'distance_variance' => get_variance($nearest_value),
+		'weight_variance' => get_variance($weight_value),
 		'message'=>''];
 
 

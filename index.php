@@ -174,6 +174,12 @@ $max_seq = get_max_seq();
 			</tr>
     		<?php  } ?>
     		<tr>
+    			<td colspan="7">Variance</td>
+    			<td id="k_variance"></td>
+    			<td id="w_variance"></td>
+    			<td colspan="4"></td>
+    		</tr>
+    		<tr>
     			<td colspan="7">Standard Deviation</td>
     			<td id="k_std"></td>
     			<td id="w_std"></td>
@@ -252,6 +258,8 @@ function fill_nearest()
 			$('#cdf_'+v.seq).text(v.cdf);
 			point_ways[v.seq] = v;
 		});
+		$('#k_variance').text(data.distance_variance);
+		$('#w_variance').text(data.weight_variance);
 		$('#k_std').text(data.distance_standard_deviation);
 		$('#w_std').text(data.weight_standard_deviation);
 		$('#k_error').text(data.distance_mean);
