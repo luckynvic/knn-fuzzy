@@ -410,6 +410,8 @@ $(function(){
 		e.preventDefault();
 		$(".map-grid-container").attr('class','map-grid-container knn-'+$(this).val());
 		$(".map-grid-container").data('type', $(this).val());
+		if(step>0)
+			set_point_map(point_ways[step]);
 	});
 
 	$('a[rel="tooltip"]').tooltip({
