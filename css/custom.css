@@ -34,12 +34,22 @@ position: absolute;
 
 .point
 {
-	background-image: url("../img/point_24.png");	
 	width: 24px;
 	height: 24px;
 	z-index: 99;
 	position: absolute;
 }
+
+#point
+{
+	background-image: url("../img/point1_24.png");	
+}
+
+#point2
+{
+	background-image: url("../img/point2_24.png");	
+}
+
 #log-window
 {
 	width: 280px;
@@ -54,4 +64,9 @@ position: absolute;
 	color: #fff;
 	font-family: courier;
 	z-index: 100;
+}
+
+.btn-group .dropdown-menu  li
+{
+	margin-left: 10px;
 }

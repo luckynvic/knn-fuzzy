@@ -50,6 +50,7 @@ $max_seq = get_max_seq();
     <div class="map-grid-container knn-map" data-type="map">
 		
 		<div class="point" id="point"></div>
+		<div class="point" id="point2"></div>
 
 		<div class="btn-toolbar pull-right" role="toolbar" id="btn-controls">
 		<div class="btn-group btn-group-xs" data-toggle="buttons">
@@ -60,6 +61,12 @@ $max_seq = get_max_seq();
 		    <input type="radio" autocomplete="off" name="map-grid" value="grid"> Grid
 		  </label>
 		</div>
+
+		<div class="btn-group btn-group-xs" data-toggle="buttons">
+		 <label class="btn btn-warning active"><input type="checkbox" class="check-point" id="check_knn" data-target="#point" checked="checked"> KNN</label>
+		 <label class="btn btn-info active"><input type="checkbox" class="check-point" id="check_fuzzy" data-target="#point2" checked="checked"> Fuzzy KNN</label>
+		</div>
+
     	<div class="btn-group btn-group-xs" role="group" >
 
     		<a href="#" id="btn-go" class="btn btn-default" rel="tooltip" data-placement="top" title="Go"><i class="fa fa-play"></i></a>
@@ -307,14 +314,16 @@ function log_point(point)
 // map function
 function set_point_map(point)
 {
-	// console.log(point);
+	console.log(point);
 	log_point(point);
-	$('#point').jPulse( "disable");
+	$('.point').jPulse( "disable");
 	layer = $(".map-grid-container").data('type');
+
 	cartesian = get_cartesian_plot(layer, point.x, point.y);
 	css_left = cartesian.x - 12;
 	css_top = cartesian.y - 24;
 
+	// knn point
 	$("#point").animate({
 		left : css_left,
 		top : css_top
@@ -322,9 +331,14 @@ function set_point_map(point)
 		easing : 'swing',
 		duration : 1000 - (speed * 100),
 		complete : function(){
+
+		if(! $('#check_knn').is(':checked'))
+			$('#point').hide();
+		else {
 			$('#point').show();
+
 			$( "#point" ).jPulse({
-				color: "#00ACED",
+				color: "#EABC1C",
 				size: 100,
 				speed: 1000,
 				interval: 500,
@@ -333,25 +347,59 @@ function set_point_map(point)
 				zIndex: 98
 			});
 		}
+
+		}
 	});
 
+	// fuzzy point
+	
+	if(point.xw==0 || point.yw==0) {
+		// skip unknown xe, ye
+			$( "#point2" ).jPulse({
+				color: "#FB0D0D",
+				size: 100,
+				speed: 1000,
+				interval: 500,
+				left: 0,
+				top: 12,
+				zIndex: 98
+			});
+			$('#point2').hide();
 
-	// linear moving
+	} else {
+	cartesian = get_cartesian_plot(layer, point.xe, point.ye);
+	css_left = cartesian.x - 12;
+	css_top = cartesian.y - 24;
+
+	
+	$("#point2").animate({
+		left : css_left,
+		top : css_top
+	}, {
+		easing : 'swing',
+		duration : 1000 - (speed * 100),
+		complete : function(){
+
+			if(! $('#check_fuzzy').is(':checked'))
+				$('#point2').hide();
+			else {
+				$('#point2').show();
+			
+				$( "#point2" ).jPulse({
+					color: "#0D8EBF",
+					size: 100,
+					speed: 1000,
+					interval: 500,
+					left: 0,
+					top: 12,
+					zIndex: 98
+				});
+			}
+		}
+	});
+	}
 
 
-	// $('#point').css('top', css_top)
-	// 		   .css('left', css_left)
-	// 		   .show();
-
-	// $( "#point" ).jPulse({
-	// 	color: "#00ACED",
-	// 	size: 100,
-	// 	speed: 1000,
-	// 	interval: 500,
-	// 	left: 0,
-	// 	top: 12,
-	// 	zIndex: 98
-	// });
 }
 var timeoutId;
 var pause = false;
@@ -433,8 +481,8 @@ $(function(){
 	$('#btn-reset').click(function(e){
 		e.preventDefault();
 		step = 0;
-		$('#point').hide();
-		$('#point').jPulse( "disable" );
+		$('.point').hide();
+		$('.point').jPulse( "disable" );
 		$('#btn-step').text(step);
 		$('#btn-pause').trigger('click');
 		$('#log-window').text('');
@@ -475,6 +523,18 @@ $(function(){
 	$('#btn-log').click(function(e){
 		e.preventDefault();
 		$('#log-window').toggle(100);
+	});
+
+	$('.check-point').change(function(e)
+	{
+		e.preventDefault;
+		target = $(this).data('target');
+		if($(this).is(':checked')) 
+			$(target).show();
+		else {
+			$(target).hide();
+			$(target).jPulse('disable');
+		}
 	});
 })
  </script>
