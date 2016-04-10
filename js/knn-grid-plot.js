@@ -57,7 +57,7 @@ if(layer=='grid') {
 if(layer=='map')
 {
 	cartesian[1] = [];
-	cartesian[1][1] = {x:84, y:829};	
+	cartesian[1][1] = {x:84, y:359};	
 	//x = 2
 	cartesian[2] = [];
 	cartesian[2][1] = {x:207, y:359};
